@@ -1,25 +1,55 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {
+  Container,
+  CssBaseline,
+  Divider,
+  Grid,
+  makeStyles,
+  Theme,
+  Typography,
+} from '@material-ui/core';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from 'react-router-dom';
+import Home from './pages/Home';
 
-function App() {
+const useStyles = makeStyles((theme: Theme) => ({
+  app: {
+    marginTop: theme.spacing(3),
+  },
+  title: {
+    color: theme.palette.primary.main,
+  },
+}));
+
+function App(): JSX.Element {
+  const classes = useStyles();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <CssBaseline />
+      <Router>
+        <Container className={classes.app}>
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <Typography variant="h3" className={classes.title}>
+                Purlab Coding Task
+              </Typography>
+              <Divider />
+            </Grid>
+            <Grid item xs={12}>
+              <Switch>
+                <Route exact path="/">
+                  <Home />
+                </Route>
+              </Switch>
+            </Grid>
+          </Grid>
+        </Container>
+      </Router>
+    </>
   );
 }
 
