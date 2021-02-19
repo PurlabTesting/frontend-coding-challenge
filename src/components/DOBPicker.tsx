@@ -70,7 +70,7 @@ const useStyles = makeStyles({
   content: {
     height: 315,
     overflow: 'scroll',
-    padding: '0 1rem',
+    padding: '0 0.5rem',
   },
   years: {
     display: 'flex',
@@ -96,11 +96,12 @@ const useStyles = makeStyles({
   },
   month: {
     ...buttonStyle,
+    padding: 0,
   },
   selectedMonth: {
     color,
     fontWeight: 'bold',
-    fontSize: '1.1rem',
+    fontSize: '1rem',
   },
   dates: {
     display: 'grid',
@@ -110,6 +111,8 @@ const useStyles = makeStyles({
     ...buttonStyle,
     height: 45,
     textAlign: 'center',
+    padding: 0,
+    margin: 0,
   },
   days: {
     padding: '0.7rem 0 0.3rem',
@@ -119,7 +122,7 @@ const useStyles = makeStyles({
   selectedDate: {
     color,
     fontWeight: 'bold',
-    fontSize: '1.1rem',
+    fontSize: '1rem',
   },
   footer: {
     height: 50,
