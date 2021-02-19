@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { format as formatDate } from 'date-fns';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles, TextField } from '@material-ui/core';
 import EventIcon from '@material-ui/icons/Event';
 import cx from 'classnames';
 import { daysInMonth, emptyDaysInMonth } from '../utils/dates';
@@ -27,6 +27,24 @@ const buttonStyle = {
 };
 
 const useStyles = makeStyles({
+  fieldContainer: {
+    display: 'flex',
+    alignItems: 'flex-end',
+    cursor: 'pointer',
+    backgroundColor: 'transparent',
+    border: 'transparent',
+    outline: 'transparent',
+    '& input': {
+      color: '#000',
+      cursor: 'pointer',
+    },
+  },
+  eventIcon: {
+    cursor: 'pointer',
+    position: 'relative',
+    left: -27,
+    bottom: 6,
+  },
   container: {
     display: 'flex',
     flexDirection: 'column',
@@ -34,9 +52,6 @@ const useStyles = makeStyles({
     height: 465,
     borderRadius: 5,
     backgroundColor: '#fff',
-  },
-  eventIcon: {
-    cursor: 'pointer',
   },
   header: {
     display: 'flex',
@@ -124,33 +139,38 @@ const useStyles = makeStyles({
 });
 
 type DOBPickerProps = {
-  type?: 'material' | 'custom';
-  onDOBSelect: (date: Date, dateAsString: string) => void;
+  label?: string;
+  onChange: (date: Date, dateAsString: string) => void;
   format?: string;
   placeholder?: string;
   dob?: Date;
   maxAgeYears?: number;
+  name?: string;
+  minAge?: number
 };
 
 const DOBPicker: React.FC<DOBPickerProps> = ({
-  onDOBSelect,
+  label = 'Date Of Birth',
+  onChange,
   format = 'MM/dd/yyyy',
   placeholder = 'mm/dd/yyyy',
   dob,
   maxAgeYears = 120,
+  name = '',
+  minAge = 0,
 }) => {
-  const today = new Date();
-  const todayYear = today.getFullYear();
-  const [showDatePicker, setShowDatePicker] = useState(false);
-
   const classes = useStyles();
 
-  const [selectedDOB, setSelectedDOB] = useState(dob);
-  const [selectedYear, setSelectedYear] = useState((selectedDOB || today).getFullYear());
-  const [selectedMonth, setSelectedMonth] = useState((selectedDOB || today).getMonth());
-  const [selectedDate, setSelectedDate] = useState((selectedDOB || today).getDate());
-  const [okEnabled, setOkEnabled] = useState(false);
-  const [view, setView] = useState<'year' | 'month' | 'date'>(!selectedDOB ? 'year' : 'date');
+  const today = new Date();
+  const todayYear = today.getFullYear();
+  const maxDate = new Date(todayYear - minAge, today.getMonth(), today.getDate());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const [selectedYear, setSelectedYear] = useState((dob || today).getFullYear());
+  const [selectedMonth, setSelectedMonth] = useState((dob || today).getMonth());
+  const [selectedDate, setSelectedDate] = useState((dob || today).getDate());
+  const [confirmEnabled, setConfirmEnabled] = useState(false);
+  const [view, setView] = useState<'year' | 'month' | 'dateOfMonth'>('year');
 
   const onSelectYear = (year: number) => {
     setSelectedYear(year);
@@ -159,35 +179,40 @@ const DOBPicker: React.FC<DOBPickerProps> = ({
 
   const onSelectMonth = (month: number) => {
     setSelectedMonth(month);
-    setView('date');
+    setView('dateOfMonth');
   };
 
   const onSelectDate = (date: number) => {
     setSelectedDate(date);
-    setOkEnabled(true);
+    setConfirmEnabled(true);
   };
 
-  const onOK = () => {
+  const onConfirm = () => {
     const pickedDate = new Date(selectedYear, selectedMonth, selectedDate);
-    setSelectedDOB(pickedDate);
-    onDOBSelect(pickedDate, formatDate(pickedDate, format));
+    // setSelectedDOB(pickedDate);
+    onChange(pickedDate, formatDate(pickedDate, format));
     setShowDatePicker(false);
   };
 
   const onCancel = () => setShowDatePicker(false);
 
-  const formattedDate = selectedDOB ? formatDate(selectedDOB, format) : '';
+  const formattedDate = dob ? formatDate(dob, format) : '';
 
   return (
     <>
-      <input
-        type="text"
-        placeholder={placeholder}
-        value={formattedDate}
-        onClick={() => setShowDatePicker(true)}
-        onChange={() => { }}
-      />
-      <EventIcon className={classes.eventIcon} onClick={() => setShowDatePicker(true)} />
+      <button className={classes.fieldContainer} onClick={() => setShowDatePicker(true)} type="button">
+        <TextField
+          placeholder={placeholder}
+          label={label}
+          value={formattedDate}
+          name={name}
+          disabled
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+        <EventIcon className={classes.eventIcon} />
+      </button>
       {showDatePicker && (
         <Modal onClose={() => setShowDatePicker(false)}>
           <div className={classes.container}>
@@ -241,7 +266,7 @@ const DOBPicker: React.FC<DOBPickerProps> = ({
                   ))}
                 </div>
               )}
-              {view === 'date' && (
+              {view === 'dateOfMonth' && (
                 <>
                   <div className={classes.dates}>
                     {DAYS.map((d) => <div key={d} className={classes.days}>{d}</div>)}
@@ -251,18 +276,21 @@ const DOBPicker: React.FC<DOBPickerProps> = ({
                       <div key={`empty-${DAYS[d]}`} />
                     ))}
                     {Array(daysInMonth(selectedYear, selectedMonth)).fill(0).map((_, d) => {
-                      const date = d + 1;
+                      const dateOfMonth = d + 1;
+                      const date = new Date(selectedYear, selectedMonth, dateOfMonth);
+                      const disabled = date > maxDate;
                       return (
                         <button
                           type="button"
                           className={cx(classes.date, {
-                            [classes.selectedDate]: selectedDate === date,
+                            [classes.selectedDate]: selectedDate === dateOfMonth,
                           })}
-                          onKeyPress={(e) => e.key === '13' && onSelectDate(date)}
-                          onClick={() => onSelectDate(date)}
-                          key={date}
+                          onKeyPress={(e) => e.key === '13' && onSelectDate(dateOfMonth)}
+                          onClick={() => onSelectDate(dateOfMonth)}
+                          key={dateOfMonth}
+                          disabled={disabled}
                         >
-                          {date}
+                          {dateOfMonth}
                         </button>
                       );
                     })}
@@ -274,7 +302,7 @@ const DOBPicker: React.FC<DOBPickerProps> = ({
               className={classes.footer}
             >
               <button type="button" className={classes.footerButton} onKeyPress={(e) => e.key === '13' && onCancel()} onClick={onCancel}>CANCEL</button>
-              <button type="button" className={classes.footerButton} onKeyPress={(e) => e.key === '13' && onOK()} onClick={onOK} disabled={!okEnabled}>OK</button>
+              <button type="button" className={classes.footerButton} onKeyPress={(e) => e.key === '13' && onConfirm()} onClick={onConfirm} disabled={!confirmEnabled}>CONFIRM</button>
             </div>
           </div>
         </Modal>
