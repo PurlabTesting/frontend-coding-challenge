@@ -170,7 +170,7 @@ const DOBPicker: React.FC<DOBPickerProps> = ({
   const [selectedMonth, setSelectedMonth] = useState((dob || today).getMonth());
   const [selectedDate, setSelectedDate] = useState((dob || today).getDate());
   const [confirmEnabled, setConfirmEnabled] = useState(false);
-  const [view, setView] = useState<'year' | 'month' | 'dateOfMonth'>('year');
+  const [view, setView] = useState<'year' | 'month' | 'dateOfMonth'>(dob ? 'dateOfMonth' : 'year');
 
   const onSelectYear = (year: number) => {
     setSelectedYear(year);
