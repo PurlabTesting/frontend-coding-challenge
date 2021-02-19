@@ -19,5 +19,7 @@ module.exports = {
     '@typescript-eslint/comma-dangle': 'warn',
     'comma-dangle': 'warn',
     'import/prefer-default-export': 'warn',
+    'react/prop-types': 'off',
+    'no-console': 'off',
   },
 };

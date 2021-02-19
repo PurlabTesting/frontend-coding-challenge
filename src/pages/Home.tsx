@@ -4,6 +4,7 @@ import {
   makeStyles,
   Grid,
 } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) => ({
   home: {
@@ -18,7 +19,7 @@ function Home(): JSX.Element {
     <>
       <Grid container spacing={3} className={classes.home}>
         <Grid item xs={12}>
-          Home
+          <Link to="/birthdayPicker">Pick your birthday!</Link>
         </Grid>
       </Grid>
     </>
