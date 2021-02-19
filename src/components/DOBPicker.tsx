@@ -144,8 +144,8 @@ type DOBPickerProps = {
   format?: string;
   placeholder?: string;
   dob?: Date;
-  maxAgeYears?: number;
   name?: string;
+  maxAge?: number;
   minAge?: number
 };
 
@@ -155,8 +155,8 @@ const DOBPicker: React.FC<DOBPickerProps> = ({
   format = 'MM/dd/yyyy',
   placeholder = 'mm/dd/yyyy',
   dob,
-  maxAgeYears = 120,
   name = '',
+  maxAge = 120,
   minAge = 0,
 }) => {
   const classes = useStyles();
@@ -189,7 +189,6 @@ const DOBPicker: React.FC<DOBPickerProps> = ({
 
   const onConfirm = () => {
     const pickedDate = new Date(selectedYear, selectedMonth, selectedDate);
-    // setSelectedDOB(pickedDate);
     onChange(pickedDate, formatDate(pickedDate, format));
     setShowDatePicker(false);
   };
@@ -231,7 +230,7 @@ const DOBPicker: React.FC<DOBPickerProps> = ({
             <div className={classes.content}>
               {view === 'year' && (
                 <div className={classes.years}>
-                  {Array(maxAgeYears).fill(0).map((_, i) => {
+                  {Array(maxAge).fill(0).map((_, i) => {
                     const year = todayYear - i;
                     return (
                       <button
