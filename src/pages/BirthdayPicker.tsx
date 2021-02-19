@@ -5,7 +5,7 @@ import {
   Grid,
 } from '@material-ui/core';
 
-import DatePicker from '../components/DatePicker';
+import DOBPicker from '../components/DOBPicker';
 
 const useStyles = makeStyles((theme: Theme) => ({
   home: {
@@ -19,28 +19,34 @@ type BirthdayPickerType = {
 
 const BirthdayPicker: React.FC<BirthdayPickerType> = () => {
   const classes = useStyles();
-  const [dob, setDob] = useState(new Date());
+  const today = new Date();
+  const [dob, setDob] = useState(today);
 
-  const onDateSelect = (date: Date, dateStr = '') => {
-    console.log(date, dateStr);
-    setDob(date);
+  const onDOBSelect = (newDate: Date, dateStr: string) => {
+    setDob(newDate);
+    console.log(dateStr);
   };
 
   return (
-    <>
+    <form onSubmit={(e) => {
+      e.stopPropagation();
+      e.preventDefault();
+    }}
+    >
       <Grid container spacing={3} className={classes.home}>
         <Grid item xs={12}>
           <div>
-            Date of Birth (MaterialUI):
-            <DatePicker type="material" value={dob} onDateSelect={onDateSelect} />
+            Date of Birth (uncontrolled field):
+            <DOBPicker type="custom" onDOBSelect={onDOBSelect} />
           </div>
           <div>
-            Date of Birth (Custom):
-            <DatePicker type="custom" value={dob} onDateSelect={onDateSelect} />
+            Date of Birth (controlled field):
+            <DOBPicker type="custom" dob={dob} onDOBSelect={onDOBSelect} />
           </div>
         </Grid>
       </Grid>
-    </>
+      <button type="submit">Submit</button>
+    </form>
   );
 };
 

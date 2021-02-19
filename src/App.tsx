@@ -8,13 +8,11 @@ import {
   Theme,
   Typography,
 } from '@material-ui/core';
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
 } from 'react-router-dom';
-import DateFnsUtils from '@date-io/date-fns';
 import Home from './pages/Home';
 import BirthdayPicker from './pages/BirthdayPicker';
 
@@ -31,7 +29,7 @@ function App(): JSX.Element {
   const classes = useStyles();
 
   return (
-    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+    <>
       <CssBaseline />
       <Router>
         <Container className={classes.app}>
@@ -55,7 +53,7 @@ function App(): JSX.Element {
           </Grid>
         </Container>
       </Router>
-    </MuiPickersUtilsProvider>
+    </>
   );
 }
 
