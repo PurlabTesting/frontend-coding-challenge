@@ -3,7 +3,7 @@ export const daysInMonth = (
   month: number,
 ): number => new Date(year, month + 1, 0).getDate();
 
-export const emptyDaysInMonth: (
+export const emptyDaysInMonth = (
   year: number,
   month: number,
-) => number = (year, month) => new Date(year, month, 1).getDay();
+): number => new Date(year, month, 1).getDay();
