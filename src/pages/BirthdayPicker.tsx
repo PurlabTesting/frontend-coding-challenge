@@ -14,9 +14,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-type BirthdayPickerType = {
-
-};
+type BirthdayPickerType = Record<string, unknown>;
 
 const BirthdayPicker: React.FC<BirthdayPickerType> = () => {
   const classes = useStyles();
